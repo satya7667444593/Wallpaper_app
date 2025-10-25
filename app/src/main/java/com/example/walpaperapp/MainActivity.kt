@@ -2,17 +2,27 @@ package com.example.walpaperapp
 
 import android.os.Bundle
 import android.widget.ImageButton
-import android.widget.ImageView // Import ImageView
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import kotlin.arrayOf
 
 class MainActivity : AppCompatActivity() {
-    // Use 'var' to allow the variable to be changed.
     private var currentImage = 0
-    lateinit var image : ImageView
-    // It's good practice to have an array or list of your images.
-     var imageNames = arrayOf("girl", "pic1", "pic2", "pic3", "pic4", "pic5", "pic6", "pic8", "pic9", "pic10", "pic11") // Add all your image names here
+    lateinit var image: ImageView
+
+    // Image names matching your drawable resources
+    private val imageNames = arrayOf(
+        "Beautyfull girl" , "Nature" ,"Nature", "Nature", "Car", "Nature", "Nature", "Flower", "city", "Jhula", "Glaxy")
+    // Array of ImageView IDs (must match your XML layout IDs)
+    private val imageViewIds = arrayOf(
+        R.id.image1, R.id.image2, R.id.image3, R.id.image4 , R.id.image5, R.id.image6, R.id.image7, R.id.image8, R.id.image9, R.id.image10, R.id.image11
+    )
+
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,76 +33,50 @@ class MainActivity : AppCompatActivity() {
         val prevButton = findViewById<ImageButton>(R.id.btn1)
         val imageName = findViewById<TextView>(R.id.textView)
 
-
-
+        // Initialize with first image visible
+        updateImageDisplay(imageName)
 
         nextButton.setOnClickListener {
-            // 1. Increment the integer index first
-            //.
-            var idcurrentImageString = "pic$currentImage"
+            // Hide current image
+            hideCurrentImage()
 
-            var idcurrentImageInt = resources.getIdentifier(idcurrentImageString, "id", packageName)
-            image = findViewById(idcurrentImageInt)
-            image.setImageResource(currentImage)
-            image.alpha=0f
-            currentImage=(11+currentImage+1)%11
-//            image.animate().alpha(1f).setDuration(1000).start()
-            var idimageToShowString = "pic$currentImage"
-            var idimageToShowInt = resources.getIdentifier(idimageToShowString, "id", packageName)
-            image = findViewById(idimageToShowInt)
-//            image.animate().alpha(1f).setDuration(1000).start()
-            image.alpha=1f
-            //ImageString, "id", packageName)
+            // Move to next image
+            currentImage = (currentImage + 1) % imageNames.size
+
+            // Show new image
+            showCurrentImage()
+
+            // Update text
             imageName.text = imageNames[currentImage]
-//
-
-
-
-
-//            currentImage++
-//            // Optional: Loop back to the start if you reach the end.
-//            if (currentImage >= imageNames.size) {
-//                currentImage = 0
-//            }
-//
-//            // 2. Get the resource ID for the new image name.
-//            val resourceId = resources.getIdentifier(imageNames[currentImage], "drawable", packageName)
-//
-//            // 3. Set the image resource for your ImageView.
-//            imageDisplay.setImageResource(resourceId)
         }
-//
+
         prevButton.setOnClickListener {
-            var idcurrentImageString = "pic$currentImage"
+            // Hide current image
+            hideCurrentImage()
 
-            var idcurrentImageInt = resources.getIdentifier(idcurrentImageString, "id", packageName)
-            image = findViewById(idcurrentImageInt)
-            image.setImageResource(currentImage)
-            image.alpha=0f
-            currentImage=(11+currentImage-1)%11
-//            image.animate().alpha(1f).setDuration(1000).start()
-            var idimageToShowString = "pic$currentImage"
-            var idimageToShowInt = resources.getIdentifier(idimageToShowString, "id", packageName)
-            image = findViewById(idimageToShowInt)
-//            image.animate().alpha(1f).setDuration(1000).start()
-            //ImageString, "id", packageName)
-            image.alpha=1f
+            // Move to previous image
+            currentImage = if (currentImage - 1 < 0) imageNames.size - 1 else currentImage - 1
 
+            // Show new image
+            showCurrentImage()
 
-
-//            // 1. Decrement the integer index first.
-//            currentImage--
-//            // Optional: Loop to the end if you go past the beginning.
-//            if (currentImage < 0) {
-//                currentImage = imageNames.size - 1
-//            }
-//
-//            // 2. Get the resource ID for the new image name.
-//            val resourceId = resources.getIdentifier(imageNames[currentImage], "drawable", packageName)
-//
-//            // 3. Set the image resource for your ImageView.
-//            imageDisplay.setImageResource(resourceId)
+            // Update text
+            imageName.text = imageNames[currentImage]
         }
+    }
 
+    private fun hideCurrentImage() {
+        image = findViewById(imageViewIds[currentImage])
+        image.alpha = 0f
+    }
+
+    private fun showCurrentImage() {
+        image = findViewById(imageViewIds[currentImage])
+        image.alpha = 1f
+    }
+
+    private fun updateImageDisplay(textView: TextView) {
+        showCurrentImage()
+        textView.text = imageNames[currentImage]
     }
 }
